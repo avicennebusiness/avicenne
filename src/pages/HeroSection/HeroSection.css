@@ -1,0 +1,11 @@
+.HeroSection {
+  margin-top: 50px;
+  padding: 50px;
+}
+.HeroSection .HeroContent {
+  padding-bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 0.7;
+}
