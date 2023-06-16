@@ -9,17 +9,17 @@ const Footer = () => {
       container
       className="Footer"
       direction={{ xs: "column", sm: "column", md: "row" }}
-      justifyContent="space-between"
-      alignItems="center"
+      justifyContent={{ xs: "start", sm: "start", md: "space-between" }}
+      alignItems={{ xs: "start", sm: "center", md: "center" }}
       marginTop="auto"
       gap="75px"
       flexWrap="nowrap"
       sx={{
         backgroundColor: "#3d3d3d",
         color: "white",
-        paddingY: "50px",
-        paddingX: "100px",
       }}
+      paddingY={{ xs: "10px", sm: "10px", md: "50px" }}
+      paddingX={{ xs: "25px", sm: "25px", md: "100px" }}
     >
       <Grid
         className="FooterLeft"
@@ -41,7 +41,7 @@ const Footer = () => {
       <Grid
         className="FooterRight"
         container
-        sx={{ maxWidth: "200px" }}
+        maxWidth={{ xs: "200px", sm: "380px", md: "200px" }}
         flexDirection="column"
         justifyContent="center"
         alignItems="start"
