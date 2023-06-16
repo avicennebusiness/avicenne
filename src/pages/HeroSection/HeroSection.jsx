@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,34 +34,54 @@ function HeroSection() {
   return (
     <Grid
       container
-      className="HeroSection"
-      direction={{ xs: "column", sm: "column", md: "row" }}
+      className="HeroSectionContainer"
+      flexDirection="column"
       justifyContent="space-between"
       alignItems="center"
     >
-      <Grid className="HeroContent" order={{ xs: 2, sm: 2, md: 1 }}>
-        <div>
-          <h1>Choose a Better You</h1>
-          <hr color="orange"></hr>
-          <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
-            repellendus corporis, itaque eligendi eum perferendis ratione
-            accusamus. Soluta, possimus modi voluptatibus optio, dolor nulla nam
-            ipsam saepe eum error eos!
-          </p>
-        </div>
+      <Grid
+        container
+        className="HeroSection"
+        direction={{ xs: "column", sm: "column", md: "row" }}
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Grid className="HeroContent" order={{ xs: 2, sm: 2, md: 1 }}>
+          <Grid>
+            <h1>Choose a Better You</h1>
+            <hr color="orange"></hr>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
+              repellendus corporis, itaque eligendi eum perferendis ratione
+              accusamus. Soluta, possimus modi voluptatibus optio, dolor nulla
+              nam ipsam saepe eum error eos!
+            </p>
+          </Grid>
+        </Grid>
+        <Grid
+          className="HeroImage"
+          order={{ xs: 1, sm: 1, md: 2 }}
+          //style={{ backgroundImage: `url(${imageUrl})` }}
+        >
+          <img
+            height={size.height}
+            width={size.width}
+            src={HoneyJar}
+            style={{ borderRadius: "38% 62% 70% 30% / 46% 45% 55% 54% " }}
+          />
+        </Grid>
       </Grid>
       <Grid
-        className="HeroImage"
-        order={{ xs: 1, sm: 1, md: 2 }}
-        //style={{ backgroundImage: `url(${imageUrl})` }}
+        container
+        className="HeroFooter"
+        justifyContent="center"
+        alignItems="center"
+        sx={{ backgroundColor: "#3d3d3d", padding: "10px" }}
       >
-        <img
-          height={size.height}
-          width={size.width}
-          src={HoneyJar}
-          style={{ borderRadius: "38% 62% 70% 30% / 46% 45% 55% 54% " }}
-        />
+        <Typography color="white">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum aperiam
+          voluptates quo blanditiis vel accusantium, iste neque facere.
+        </Typography>
       </Grid>
     </Grid>
   );
