@@ -49,7 +49,7 @@ function HeroSection() {
         <Grid className="HeroContent" order={{ xs: 2, sm: 2, md: 1 }}>
           <Grid>
             <h1>Choose a Better You</h1>
-            <hr color="orange"></hr>
+            <hr color="#D78C12"></hr>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
               repellendus corporis, itaque eligendi eum perferendis ratione

@@ -30,7 +30,7 @@ const Footer = () => {
         alignItems="start"
       >
         <h1>Choose a Better You</h1>
-        <hr color="orange" style={{ width: "100%" }}></hr>
+        <hr color="#D78C12" style={{ width: "100%" }}></hr>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
           repellendus corporis, itaque eligendi eum perferendis ratione
@@ -47,7 +47,7 @@ const Footer = () => {
         alignItems="start"
       >
         <h1>Contact Us</h1>
-        <hr color="orange" style={{ width: "100%" }}></hr>
+        <hr color="#D78C12" style={{ width: "100%" }}></hr>
         <Grid
           container
           justifyContent="start"

@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@mui/material";
+import React, { useState, useEffect, Fragment } from "react";
+import { Grid } from "@mui/material";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, DataSnapshot } from "firebase/database";
-
+import Honey from "@/assets/images/honey-jar.jpg";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Typography from "@mui/material/Typography";
+import { Button, CardActionArea, CardActions } from "@mui/material";
+import { Link } from "react-router-dom";
 const firebaseConfig = {
   // Your Firebase configuration
   apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
@@ -21,8 +27,11 @@ const database = getDatabase(firebaseApp);
 
 const ProductsSection = () => {
   const [categories, setCategories] = useState([]);
+  const [bestSellers, setBestSellers] = useState([]);
+
   useEffect(() => {
-    const categoriesRef = ref(database, "categories");
+    const categoriesRef = ref(database, "Categories");
+
     const fetchCategories = () => {
       onValue(
         categoriesRef,
@@ -30,18 +39,25 @@ const ProductsSection = () => {
           const data = snapshot.val();
           if (data) {
             const categoriesArray = Object.entries(data).map(
-              ([categoryId, category]) => ({
-                id: categoryId,
-                name: category.name,
-                products: Object.entries(category.products).map(
-                  ([productId, product]) => ({
-                    id: productId,
+              ([categoryName, products]) => ({
+                name: categoryName,
+                products: Object.entries(products).map(
+                  ([productName, product]) => ({
+                    name: productName,
                     ...product,
                   })
                 ),
               })
             );
             setCategories(categoriesArray);
+
+            const allProducts = categoriesArray.flatMap(
+              (category) => category.products
+            );
+            const sortedBestSellers = [...allProducts].sort(
+              (a, b) => b.price - a.price
+            );
+            setBestSellers(sortedBestSellers);
           }
         },
         (error) => {
@@ -52,31 +68,199 @@ const ProductsSection = () => {
 
     fetchCategories();
   }, []);
+
   return (
-    <div>
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
-        Hi Welcome
-      </h1>
-      <Button>Hi</Button>
-      <div>
-        <h1>Categories</h1>
-        {categories.map((category) => (
-          <div key={category.id}>
-            <h2>{category.name}</h2>
-            <ul>
-              {category.products.map((product) => (
-                <li key={product.id}>
-                  <h3>{product.name}</h3>
-                  <p>{product.description}</p>
-                  <p>Price: ${product.price}</p>
-                  <img src={product.image} alt={product.name} />
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
+    <Grid
+      container
+      display="flex"
+      flexDirection="column"
+      gap="50px"
+      justifyContent="center"
+      alignItems="center"
+      padding="75px"
+    >
+      <Grid
+        container
+        display="flex"
+        flexDirection="column"
+        gap="25px"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <h1>Best Sellers</h1>
+        <Grid
+          display="flex"
+          justifyContent="center"
+          gap="40px"
+          flexDirection={{ xs: "column", sm: "column", lg: "row" }}
+          width={{ xs: "100%", sm: "40vw", lg: "80%" }}
+        >
+          {bestSellers.slice(0, 3).map((product) => (
+            <Grid flex="1 1 0px" key={product.name}>
+              <Card
+                sx={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
+                <CardActionArea>
+                  <CardMedia
+                    component="img"
+                    height="65%"
+                    image={Honey}
+                    alt="Honey"
+                  />
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      flexWrap: "nowrap",
+                      alignItems: "center",
+                      marginTop: "25px",
+                      paddingX: "10px",
+                      gap: "10px",
+                    }}
+                  >
+                    <Typography gutterBottom variant="h5" component="div">
+                      {product.name}
+                    </Typography>
+                    <Typography variant="h5" color="text.secondary">
+                      {product.price + " TND"}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <CardActions sx={{ justifyContent: "end" }}>
+                  <Button
+                    size="small"
+                    sx={{
+                      backgroundColor: "#fff",
+                      color: "#D78C12",
+                      "&:hover": {
+                        backgroundColor: "#f5cd8c88",
+                        color: "#D78C12",
+                      },
+                      my: 2,
+                      borderRadius: "3px",
+                    }}
+                  >
+                    View More
+                  </Button>
+                </CardActions>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <Link
+          style={{
+            color: "#D78C12",
+            borderBottom: "2px dashed #D78C12",
+            textDecoration: "none",
+          }}
+          to=""
+        >
+          View All
+        </Link>
+      </Grid>
+      <Grid
+        container
+        display="flex"
+        flexDirection="column"
+        gap="25px"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <h1>Honey</h1>
+        <Grid
+          display="flex"
+          justifyContent="center"
+          gap="40px"
+          flexDirection={{ xs: "column", sm: "column", lg: "row" }}
+          width={{ xs: "100%", sm: "40vw", lg: "80%" }}
+        >
+          {categories.map(
+            (category) =>
+              category.name === "Miels" && (
+                <Fragment key={category.name}>
+                  {category.products.slice(0, 3).map((product) => (
+                    <Grid flex="1 1 0px" key={product.name}>
+                      <Card
+                        sx={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <CardActionArea>
+                          <CardMedia
+                            component="img"
+                            height="65%"
+                            image={Honey}
+                            alt="Honey"
+                          />
+                          <CardContent
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              flexWrap: "nowrap",
+                              alignItems: "center",
+                              marginTop: "25px",
+                              paddingX: "10px",
+                              gap: "10px",
+                            }}
+                          >
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {product.name}
+                            </Typography>
+                            <Typography variant="h5" color="text.secondary">
+                              {product.price + " TND"}
+                            </Typography>
+                          </CardContent>
+                        </CardActionArea>
+                        <CardActions sx={{ justifyContent: "end" }}>
+                          <Button
+                            size="small"
+                            sx={{
+                              backgroundColor: "#fff",
+                              color: "#D78C12",
+                              "&:hover": {
+                                backgroundColor: "#f5cd8c88",
+                                color: "#D78C12",
+                              },
+                              my: 2,
+                              borderRadius: "3px",
+                            }}
+                          >
+                            View More
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Fragment>
+              )
+          )}
+        </Grid>
+        <Link
+          style={{
+            color: "#D78C12",
+            borderBottom: "2px dashed #D78C12",
+            textDecoration: "none",
+          }}
+          to=""
+        >
+          View All
+        </Link>
+      </Grid>
+    </Grid>
   );
 };
 
