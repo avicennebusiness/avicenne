@@ -14,11 +14,18 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Image from "mui-image";
 import Logo from "@/assets/images/Avicenne-logo.png";
-const pages = ["Products", "About Us", "Contact Us"];
+import { useNavigate } from "react-router-dom";
+import { HashLink as Link } from "react-router-hash-link";
+const pages = [
+  { label: "Products", to: "/avicenne/products" },
+  { label: "About Us", to: "/avicenne/#AboutUs" },
+  { label: "Contact Us", to: "/avicenne/#ContactUs" },
+];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -42,7 +49,9 @@ function NavBar() {
         backgroundColor: "#FEF5F0",
         boxShadow: "none",
         color: "#111111",
-        padding: "0px 50px",
+      }}
+      sx={{
+        paddingX: { xs: "0px", sm: "10px", lg: "50px" },
       }}
     >
       <Container maxWidth="xl">
@@ -61,6 +70,9 @@ function NavBar() {
             height="75px"
             width="200px"
             style={{ cursor: "pointer" }}
+            onClick={() => {
+              navigate("/avicenne/");
+            }}
           />
 
           <Box
@@ -98,11 +110,13 @@ function NavBar() {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography color="#111111" textAlign="center">
-                    {page}
-                  </Typography>
-                </MenuItem>
+                <Link style={{ textDecoration: "none" }} to={page.to} key={page.label}>
+                  <MenuItem  onClick={handleCloseNavMenu}>
+                    <Typography color="#111111" textAlign="center">
+                      {page.label}
+                    </Typography>
+                  </MenuItem>
+                </Link>
               ))}
             </Menu>
           </Box>
@@ -114,18 +128,20 @@ function NavBar() {
             }}
           >
             {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{
-                  my: 2,
-                  color: "#111111",
-                  display: "block",
-                  fontWeight: "bold",
-                }}
-              >
-                {page}
-              </Button>
+              <Link style={{ textDecoration: "none" }} to={page.to} key={page.label}>
+                <Button
+                  
+                  onClick={handleCloseNavMenu}
+                  sx={{
+                    my: 2,
+                    color: "#111111",
+                    display: "block",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {page.label}
+                </Button>
+              </Link>
             ))}
           </Box>
         </Toolbar>

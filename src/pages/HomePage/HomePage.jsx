@@ -9,7 +9,6 @@ const HomePage = () => {
       className="HomePage"
       style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
-      <NavBar />
       <HeroSection />
       <ProductsSection />
       <Footer />

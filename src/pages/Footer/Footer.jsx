@@ -6,6 +6,7 @@ import MailIcon from "@mui/icons-material/Mail";
 const Footer = () => {
   return (
     <Grid
+      id='ContactUs'
       container
       className="Footer"
       direction={{ xs: "column", sm: "column", md: "row" }}

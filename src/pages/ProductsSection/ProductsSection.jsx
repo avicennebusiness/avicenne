@@ -8,7 +8,8 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { Button, CardActionArea, CardActions } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 const firebaseConfig = {
   // Your Firebase configuration
   apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
@@ -28,6 +29,7 @@ const database = getDatabase(firebaseApp);
 const ProductsSection = () => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const categoriesRef = ref(database, "Categories");
@@ -77,7 +79,7 @@ const ProductsSection = () => {
       gap="50px"
       justifyContent="center"
       alignItems="center"
-      padding="75px"
+      padding={{ xs: "25px", sm: "25px", lg: "75px" }}
     >
       <Grid
         container
@@ -91,16 +93,18 @@ const ProductsSection = () => {
         <Grid
           display="flex"
           justifyContent="center"
+          alignItems="center"
           gap="40px"
-          flexDirection={{ xs: "column", sm: "column", lg: "row" }}
-          width={{ xs: "100%", sm: "40vw", lg: "80%" }}
+          flexDirection={{ xs: "column", sm: "row", lg: "row" }}
+          width={{ xs: "100%", sm: "95%", lg: "95%" }}
+          flexWrap="wrap"
         >
           {bestSellers.slice(0, 3).map((product) => (
-            <Grid flex="1 1 0px" key={product.name}>
+            <Grid key={product.name}>
               <Card
                 sx={{
-                  width: "100%",
-                  height: "100%",
+                  width: { xs: "250px", sm: "250px", lg: "300px" },
+                  height: "500px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "space-between",
@@ -109,7 +113,7 @@ const ProductsSection = () => {
                 <CardActionArea>
                   <CardMedia
                     component="img"
-                    height="65%"
+                    height="250px"
                     image={Honey}
                     alt="Honey"
                   />
@@ -159,7 +163,7 @@ const ProductsSection = () => {
             borderBottom: "2px dashed #D78C12",
             textDecoration: "none",
           }}
-          to=""
+          to="/avicenne/products"
         >
           View All
         </Link>
@@ -175,21 +179,23 @@ const ProductsSection = () => {
         <h1>Honey</h1>
         <Grid
           display="flex"
+          alignItems="center"
+          flexWrap="wrap"
           justifyContent="center"
           gap="40px"
-          flexDirection={{ xs: "column", sm: "column", lg: "row" }}
-          width={{ xs: "100%", sm: "40vw", lg: "80%" }}
+          flexDirection={{ xs: "column", sm: "row", lg: "row" }}
+          width={{ xs: "100%", sm: "95%", lg: "95%" }}
         >
           {categories.map(
             (category) =>
               category.name === "Miels" && (
                 <Fragment key={category.name}>
                   {category.products.slice(0, 3).map((product) => (
-                    <Grid flex="1 1 0px" key={product.name}>
+                    <Grid key={product.name}>
                       <Card
                         sx={{
-                          width: "100%",
-                          height: "100%",
+                          width: { xs: "250px", sm: "250px", lg: "300px" },
+                          height: "500px",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "space-between",
@@ -198,7 +204,7 @@ const ProductsSection = () => {
                         <CardActionArea>
                           <CardMedia
                             component="img"
-                            height="65%"
+                            height="250px"
                             image={Honey}
                             alt="Honey"
                           />
@@ -255,7 +261,7 @@ const ProductsSection = () => {
             borderBottom: "2px dashed #D78C12",
             textDecoration: "none",
           }}
-          to=""
+          to="/avicenne/products"
         >
           View All
         </Link>
