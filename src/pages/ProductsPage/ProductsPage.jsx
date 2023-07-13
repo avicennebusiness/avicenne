@@ -19,10 +19,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
-
-import Fab from "@mui/material/Fab";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
-import { useScrollTrigger, Zoom } from "@mui/material";
+import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 
 const firebaseConfig = {
   // Your Firebase configuration
@@ -39,37 +36,6 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const database = getDatabase(firebaseApp);
-
-const ScrollToTop = ({ children }) => {
-  const trigger = useScrollTrigger({
-    disableHysteresis: true,
-    threshold: 100,
-  });
-
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
-
-  return (
-    <Zoom in={trigger}>
-      <div
-        onClick={scrollToTop}
-        role="presentation"
-        style={{
-          position: "fixed",
-          bottom: "2rem",
-          right: "2rem",
-          zIndex: 9999,
-        }}
-      >
-        {children}
-      </div>
-    </Zoom>
-  );
-};
 
 const ProductsPage = () => {
   const [categories, setCategories] = useState([]);
@@ -114,13 +80,6 @@ const ProductsPage = () => {
 
     fetchCategories();
   }, []);
-
-  const handleClick = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
 
   return (
     <Grid container flexDirection="row" flexWrap="nowrap">
@@ -259,11 +218,7 @@ const ProductsPage = () => {
           </Grid>
         ))}
       </Grid>
-      <ScrollToTop>
-        <Fab aria-label="scroll-to-top">
-          <KeyboardArrowUpIcon />
-        </Fab>
-      </ScrollToTop>
+      <ScrollToTop />
     </Grid>
   );
 };
