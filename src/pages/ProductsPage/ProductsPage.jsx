@@ -19,6 +19,11 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
+
+import Fab from "@mui/material/Fab";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import { useScrollTrigger, Zoom } from "@mui/material";
+
 const firebaseConfig = {
   // Your Firebase configuration
   apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
@@ -35,11 +40,41 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const database = getDatabase(firebaseApp);
 
+const ScrollToTop = ({ children }) => {
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 100,
+  });
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  return (
+    <Zoom in={trigger}>
+      <div
+        onClick={scrollToTop}
+        role="presentation"
+        style={{
+          position: "fixed",
+          bottom: "2rem",
+          right: "2rem",
+          zIndex: 9999,
+        }}
+      >
+        {children}
+      </div>
+    </Zoom>
+  );
+};
+
 const ProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
   const navigate = useNavigate();
-
   useEffect(() => {
     const categoriesRef = ref(database, "Categories");
 
@@ -80,21 +115,25 @@ const ProductsPage = () => {
     fetchCategories();
   }, []);
 
+  const handleClick = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
   return (
-    <Grid
-      container
-      flexDirection={{ xs: "column", sm: "column", lg: "row" }}
-      flexWrap="nowrap"
-    >
+    <Grid container flexDirection="row" flexWrap="nowrap">
       <Grid item marginBottom={{ xs: "100px", sm: "100px", lg: "0px" }}>
         <AppBar
           sx={{
-            height: { xs: "fit-content", sm: "fit-content", lg: "100vh" },
-            maxWidth: { xs: "95%", sm: "95%", lg: "250px" },
-            marginTop: { xs: "100px", sm: "100px", lg: "0px" },
+            height: "80vh",
+            maxWidth: "250px",
+            marginTop: "100px",
+            paddingTop: "50px",
             backgroundColor: "#fff",
             color: "#202020",
-            marginLeft: { xs: "0 px", sm: "0 px", lg: "50px" },
+            marginLeft: { xs: "10px", sm: "10px", lg: "50px" },
             borderRadius: "10px",
             position: "sticky",
           }}
@@ -102,7 +141,7 @@ const ProductsPage = () => {
           <Toolbar>
             <Grid
               container
-              flexDirection={{ xs: "row", sm: "row", lg: "column" }}
+              flexDirection="column"
               alignItems="start"
               justifyContent="center"
             >
@@ -155,8 +194,8 @@ const ProductsPage = () => {
               justifyContent="center"
               alignItems="center"
               gap="40px"
-              flexDirection={{ xs: "column", sm: "row", lg: "row" }}
-              width={{ xs: "100%", sm: "95%", lg: "95%" }}
+              flexDirection="row"
+              width="100%"
               flexWrap="wrap"
             >
               {category.products.map((product) => (
@@ -220,6 +259,11 @@ const ProductsPage = () => {
           </Grid>
         ))}
       </Grid>
+      <ScrollToTop>
+        <Fab aria-label="scroll-to-top">
+          <KeyboardArrowUpIcon />
+        </Fab>
+      </ScrollToTop>
     </Grid>
   );
 };
