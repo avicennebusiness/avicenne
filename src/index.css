@@ -1,3 +1,6 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -6,4 +9,7 @@
   color: #111111;
 
   background-color: #fef5f0;
+}
+html {
+  scroll-behavior: smooth;
 }

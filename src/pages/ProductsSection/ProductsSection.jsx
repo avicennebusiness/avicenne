@@ -2,14 +2,12 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Grid } from "@mui/material";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, DataSnapshot } from "firebase/database";
-import Honey from "@/assets/images/honey-jar.jpg";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import { Button, CardActionArea, CardActions } from "@mui/material";
+import { Button } from "@material-tailwind/react";
 import { Link, useNavigate } from "react-router-dom";
+import ProductCard from "../../components/productCard";
+import "./ProductsSection.css";
 
+import { motion, AnimatePresence } from "framer-motion";
 const firebaseConfig = {
   // Your Firebase configuration
   apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
@@ -29,6 +27,8 @@ const database = getDatabase(firebaseApp);
 const ProductsSection = () => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [activeCat, setActiveCat] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,6 +51,7 @@ const ProductsSection = () => {
                 ),
               })
             );
+            console.log(categoriesArray);
             setCategories(categoriesArray);
 
             const allProducts = categoriesArray.flatMap(
@@ -60,6 +61,7 @@ const ProductsSection = () => {
               (a, b) => b.price - a.price
             );
             setBestSellers(sortedBestSellers);
+            setFiltered(sortedBestSellers.slice(0, 6));
           }
         },
         (error) => {
@@ -70,203 +72,152 @@ const ProductsSection = () => {
 
     fetchCategories();
   }, []);
-
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0 },
+  };
   return (
-    <Grid
-      container
-      display="flex"
-      flexDirection="column"
-      gap="50px"
-      justifyContent="center"
-      alignItems="center"
-      padding={{ xs: "25px", sm: "25px", lg: "75px" }}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="w-full"
     >
       <Grid
         container
         display="flex"
         flexDirection="column"
-        gap="25px"
+        gap="50px"
         justifyContent="center"
         alignItems="center"
+        padding={{ xs: "25px", sm: "25px", lg: "75px" }}
       >
-        <h1>Best Sellers</h1>
-        <Grid
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          gap="40px"
-          flexDirection={{ xs: "column", sm: "row", lg: "row" }}
-          width={{ xs: "100%", sm: "95%", lg: "95%" }}
-          flexWrap="wrap"
-        >
-          {bestSellers.slice(0, 3).map((product) => (
-            <Grid key={product.name}>
-              <Card
-                sx={{
-                  width: { xs: "250px", sm: "250px", lg: "300px" },
-                  height: "500px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-between",
-                }}
-              >
-                <CardActionArea>
-                  <CardMedia
-                    component="img"
-                    height="250px"
-                    image={Honey}
-                    alt="Honey"
-                  />
-                  <CardContent
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      flexWrap: "nowrap",
-                      alignItems: "center",
-                      marginTop: "25px",
-                      paddingX: "10px",
-                      gap: "10px",
-                    }}
-                  >
-                    <Typography gutterBottom variant="h5" component="div">
-                      {product.name}
-                    </Typography>
-                    <Typography variant="h5" color="text.secondary">
-                      {product.price + " TND"}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-                <CardActions sx={{ justifyContent: "end" }}>
-                  <Button
-                    size="small"
-                    sx={{
-                      backgroundColor: "#fff",
-                      color: "#D78C12",
-                      "&:hover": {
-                        backgroundColor: "#f5cd8c88",
-                        color: "#D78C12",
-                      },
-                      my: 2,
-                      borderRadius: "3px",
-                    }}
-                  >
-                    View More
-                  </Button>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        <Link
-          style={{
-            color: "#D78C12",
-            borderBottom: "2px dashed #D78C12",
-            textDecoration: "none",
-          }}
-          to="/avicenne/products"
-        >
-          View All
-        </Link>
+        <div className="filter-container flex flex-wrap gap-2">
+          <button
+            className={activeCat == 0 ? "active" : ""}
+            onClick={() => {
+              setFiltered(bestSellers.slice(0, 6));
+              setActiveCat(0);
+            }}
+          >
+            Best Sellers
+          </button>
+          <button
+            className={activeCat == 1 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Miels")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(1);
+            }}
+          >
+            Honey
+          </button>
+          <button
+            className={activeCat == 2 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Crèmes")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(2);
+            }}
+          >
+            Crèmes
+          </button>
+          <button
+            className={activeCat == 3 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Huiles essentielles")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(3);
+            }}
+          >
+            Huiles essentielles
+          </button>
+          <button
+            className={activeCat == 4 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Huiles végétales")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(4);
+            }}
+          >
+            Huiles végétales
+          </button>
+          <button
+            className={activeCat == 5 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Hydrolats")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(5);
+            }}
+          >
+            Hydrolats
+          </button>
+          <button
+            className={activeCat == 6 ? "active" : ""}
+            onClick={() => {
+              setFiltered(
+                categories
+                  .filter((cat) => cat.name === "Produits de la suche")[0]
+                  .products.slice(0, 6)
+              );
+              setActiveCat(6);
+            }}
+          >
+            Produits de la suche
+          </button>
+        </div>
+        <AnimatePresence>
+          <Grid
+            container
+            display="flex"
+            flexDirection="column"
+            gap="25px"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <div className="products-grid">
+              {filtered.map((product) => (
+                <motion.div
+                  key={product.name}
+                  variants={cardVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="hidden"
+                  className="h-full w-full max-w-[26rem]"
+                >
+                  <ProductCard key={product.name} product={product} />
+                </motion.div>
+              ))}
+            </div>
+            <Link
+              style={{
+                color: "#D78C12",
+                borderBottom: "2px dashed #D78C12",
+                textDecoration: "none",
+              }}
+              to="/avicenne/products"
+            >
+              View All
+            </Link>
+          </Grid>
+        </AnimatePresence>
       </Grid>
-      <Grid
-        container
-        display="flex"
-        flexDirection="column"
-        gap="25px"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <h1>Honey</h1>
-        <Grid
-          display="flex"
-          alignItems="center"
-          flexWrap="wrap"
-          justifyContent="center"
-          gap="40px"
-          flexDirection={{ xs: "column", sm: "row", lg: "row" }}
-          width={{ xs: "100%", sm: "95%", lg: "95%" }}
-        >
-          {categories.map(
-            (category) =>
-              category.name === "Miels" && (
-                <Fragment key={category.name}>
-                  {category.products.slice(0, 3).map((product) => (
-                    <Grid key={product.name}>
-                      <Card
-                        sx={{
-                          width: { xs: "250px", sm: "250px", lg: "300px" },
-                          height: "500px",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <CardActionArea>
-                          <CardMedia
-                            component="img"
-                            height="250px"
-                            image={Honey}
-                            alt="Honey"
-                          />
-                          <CardContent
-                            sx={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              flexWrap: "nowrap",
-                              alignItems: "center",
-                              marginTop: "25px",
-                              paddingX: "10px",
-                              gap: "10px",
-                            }}
-                          >
-                            <Typography
-                              gutterBottom
-                              variant="h5"
-                              component="div"
-                            >
-                              {product.name}
-                            </Typography>
-                            <Typography variant="h5" color="text.secondary">
-                              {product.price + " TND"}
-                            </Typography>
-                          </CardContent>
-                        </CardActionArea>
-                        <CardActions sx={{ justifyContent: "end" }}>
-                          <Button
-                            size="small"
-                            sx={{
-                              backgroundColor: "#fff",
-                              color: "#D78C12",
-                              "&:hover": {
-                                backgroundColor: "#f5cd8c88",
-                                color: "#D78C12",
-                              },
-                              my: 2,
-                              borderRadius: "3px",
-                            }}
-                          >
-                            View More
-                          </Button>
-                        </CardActions>
-                      </Card>
-                    </Grid>
-                  ))}
-                </Fragment>
-              )
-          )}
-        </Grid>
-        <Link
-          style={{
-            color: "#D78C12",
-            borderBottom: "2px dashed #D78C12",
-            textDecoration: "none",
-          }}
-          to="/avicenne/products"
-        >
-          View All
-        </Link>
-      </Grid>
-    </Grid>
+    </motion.div>
   );
 };
 

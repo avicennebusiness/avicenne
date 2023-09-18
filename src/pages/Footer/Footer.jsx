@@ -6,7 +6,7 @@ import MailIcon from "@mui/icons-material/Mail";
 const Footer = () => {
   return (
     <Grid
-      id='ContactUs'
+      id="ContactUs"
       container
       className="Footer"
       direction={{ xs: "column", sm: "column", md: "row" }}
@@ -29,9 +29,10 @@ const Footer = () => {
         flexDirection="column"
         justifyContent="center"
         alignItems="start"
+        gap="25px"
       >
-        <h1>Choose a Better You</h1>
-        <hr color="#D78C12" style={{ width: "100%" }}></hr>
+        <h1 className=" text-3xl font-bold">Choose a Better You</h1>
+        <hr color="#D78C12" className="w-full h-1 border-none"></hr>
         <p>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
           repellendus corporis, itaque eligendi eum perferendis ratione
@@ -46,9 +47,10 @@ const Footer = () => {
         flexDirection="column"
         justifyContent="center"
         alignItems="start"
+        gap="25px"
       >
-        <h1>Contact Us</h1>
-        <hr color="#D78C12" style={{ width: "100%" }}></hr>
+        <h1 className=" text-3xl font-bold">Contact Us</h1>
+        <hr color="#D78C12" className="w-full h-1 border-none"></hr>
         <Grid
           container
           justifyContent="start"

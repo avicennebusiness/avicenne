@@ -47,9 +47,9 @@ function HeroSection() {
         alignItems="center"
       >
         <Grid className="HeroContent" order={{ xs: 2, sm: 2, md: 1 }}>
-          <Grid>
-            <h1>Choose a Better You</h1>
-            <hr color="#D78C12"></hr>
+          <Grid container gap='25px'>
+            <h1 className=" text-3xl font-bold">Choose a Better You</h1>
+            <hr color="#D78C12" className="h-1 w-full"></hr>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Ex
               repellendus corporis, itaque eligendi eum perferendis ratione

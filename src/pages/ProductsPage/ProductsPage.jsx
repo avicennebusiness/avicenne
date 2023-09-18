@@ -2,25 +2,14 @@ import React, { useState, useEffect, Fragment } from "react";
 import { Grid } from "@mui/material";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, DataSnapshot } from "firebase/database";
-import Honey from "@/assets/images/honey-jar.jpg";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import {
-  Button,
-  CardActionArea,
-  CardActions,
-  AppBar,
-  Toolbar,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import { AppBar, Toolbar, IconButton, Modal } from "@mui/material";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { useNavigate } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
-
+import ProductCard from "../../components/productCard";
+import "./ProductsPage.css";
 const firebaseConfig = {
   // Your Firebase configuration
   apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
@@ -40,6 +29,12 @@ const database = getDatabase(firebaseApp);
 const ProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
+  const [isAppBarVisible, setIsAppBarVisible] = useState(false);
+
+  const toggleAppBar = () => {
+    setIsAppBarVisible(!isAppBarVisible);
+  };
+
   const navigate = useNavigate();
   useEffect(() => {
     const categoriesRef = ref(database, "Categories");
@@ -80,21 +75,113 @@ const ProductsPage = () => {
 
     fetchCategories();
   }, []);
-
+  console.log(window.location.href.split("#")[1]);
   return (
-    <Grid container flexDirection="row" flexWrap="nowrap">
+    <Grid
+      container
+      flexDirection={{ xs: "column", sm: "column", md: "row" }}
+      flexWrap="nowrap"
+    >
       <Grid item marginBottom={{ xs: "100px", sm: "100px", lg: "0px" }}>
+        <Grid item sx={{ display: { xs: "flex", sm: "flex", md: "none" } }}>
+          <IconButton
+            onClick={toggleAppBar}
+            sx={{
+              position: "fixed",
+              top: "140px",
+              right: 0,
+              zIndex: 9999,
+            }}
+          >
+            <FilterListIcon />
+          </IconButton>
+          <Modal
+            open={isAppBarVisible}
+            onClose={toggleAppBar}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <AppBar
+              sx={{
+                width: "100%", // Adjust the width as needed
+
+                backgroundColor: "white",
+                color: "#202020",
+                boxShadow: "none",
+                borderRadius: "10px",
+                overflow: "hidden",
+              }}
+            >
+              <Toolbar sx={{ flexDirection: "column" }}>
+                <Typography
+                  sx={{
+                    my: 2,
+                    color: "#111111",
+                    display: "block",
+                    fontWeight: "bold",
+                    textAlign: "left",
+                    fontSize: "24px",
+                  }}
+                >
+                  Categories
+                </Typography>
+                <Grid
+                  container
+                  flexDirection="row"
+                  gap="15px"
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  {categories.map((category, index) => (
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to={"#" + index}
+                      key={category.name}
+                    >
+                      <Typography
+                        sx={{
+                          my: 2,
+                          color: "#454545",
+                          textAlign: "left",
+                          fontWeight: "bold",
+                          padding: "5px 10px",
+                          border: "1px solid #D78C12",
+                          borderRadius: "10px",
+                          backgroundColor:
+                            window.location.href.split("#")[1] == index
+                              ? "#f1b34e"
+                              : "white",
+                        }}
+                      >
+                        {category.name}
+                      </Typography>
+                    </Link>
+                  ))}
+                </Grid>
+              </Toolbar>
+            </AppBar>
+          </Modal>
+        </Grid>
         <AppBar
           sx={{
             height: "80vh",
             maxWidth: "250px",
-            marginTop: "100px",
+            marginTop: { xs: "140px", sm: "140px", lg: "190px" },
             paddingTop: "50px",
-            backgroundColor: "#fff",
+            backgroundColor: "white",
             color: "#202020",
             marginLeft: { xs: "10px", sm: "10px", lg: "50px" },
-            borderRadius: "10px",
+            boxShadow: "none",
             position: "sticky",
+            display: { xs: "none", sm: "none", md: "flex" },
           }}
         >
           <Toolbar>
@@ -104,23 +191,38 @@ const ProductsPage = () => {
               alignItems="start"
               justifyContent="center"
             >
-              {categories.map((categpry) => (
+              <Typography
+                sx={{
+                  my: 2,
+                  color: "#111111",
+                  display: "block",
+                  fontWeight: "bold",
+                  textAlign: "left",
+                  fontSize: "24px",
+                }}
+              >
+                Categories
+              </Typography>
+              {categories.map((category, index) => (
                 <Link
                   style={{ textDecoration: "none" }}
-                  to={"#" + categpry.name}
-                  key={categpry.name}
+                  to={"#" + index}
+                  key={category.name}
                 >
-                  <Button
+                  <Typography
                     sx={{
                       my: 2,
-                      color: "#111111",
-                      display: "block",
-                      fontWeight: "bold",
+                      color: "#454545",
                       textAlign: "left",
+                      fontWeight: "bold",
+                      textDecoration:
+                        window.location.href.split("#")[1] == index
+                          ? "underline"
+                          : "none",
                     }}
                   >
-                    {categpry.name}
-                  </Button>
+                    {category.name}
+                  </Typography>
                 </Link>
               ))}
             </Grid>
@@ -135,86 +237,26 @@ const ProductsPage = () => {
         justifyContent="center"
         alignItems="center"
         padding={{ xs: "25px", sm: "25px", lg: "75px" }}
+        sx={{ width: "100%" }}
       >
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <Grid
             key={category.name}
-            id={category.name}
+            id={index}
             container
             display="flex"
             flexDirection="column"
             gap="25px"
             justifyContent="center"
             alignItems="center"
+            sx={{ width: "100%" }}
           >
-            <h1>{category.name}</h1>
-            <Grid
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              gap="40px"
-              flexDirection="row"
-              width="100%"
-              flexWrap="wrap"
-            >
+            <h1 className=" text-3xl font-bold">{category.name}</h1>
+            <div className="products-grid">
               {category.products.map((product) => (
-                <Grid key={product.name}>
-                  <Card
-                    sx={{
-                      width: { xs: "250px", sm: "250px", lg: "300px" },
-                      height: "500px",
-                      display: "flex",
-                      flexDirection: "column",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <CardActionArea>
-                      <CardMedia
-                        component="img"
-                        height="250px"
-                        image={Honey}
-                        alt="Honey"
-                      />
-                      <CardContent
-                        sx={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          flexWrap: "nowrap",
-                          alignItems: "center",
-                          marginTop: "25px",
-                          paddingX: "10px",
-                          gap: "10px",
-                        }}
-                      >
-                        <Typography gutterBottom variant="h5" component="div">
-                          {product.name}
-                        </Typography>
-                        <Typography variant="h5" color="text.secondary">
-                          {product.price + " TND"}
-                        </Typography>
-                      </CardContent>
-                    </CardActionArea>
-                    <CardActions sx={{ justifyContent: "end" }}>
-                      <Button
-                        size="small"
-                        sx={{
-                          backgroundColor: "#fff",
-                          color: "#D78C12",
-                          "&:hover": {
-                            backgroundColor: "#f5cd8c88",
-                            color: "#D78C12",
-                          },
-                          my: 2,
-                          borderRadius: "3px",
-                        }}
-                      >
-                        View More
-                      </Button>
-                    </CardActions>
-                  </Card>
-                </Grid>
+                <ProductCard key={product.name} product={product} />
               ))}
-            </Grid>
+            </div>
           </Grid>
         ))}
       </Grid>
