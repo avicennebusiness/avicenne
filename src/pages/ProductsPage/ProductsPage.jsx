@@ -1,14 +1,27 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment, useRef } from "react";
 import { Grid } from "@mui/material";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, onValue, DataSnapshot } from "firebase/database";
-import Typography from "@mui/material/Typography";
 import { AppBar, Toolbar, IconButton, Modal } from "@mui/material";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { useNavigate } from "react-router-dom";
 import { HashLink as Link } from "react-router-hash-link";
 import ScrollToTop from "../../components/ScrollToTop/ScrollToTop";
 import ProductCard from "../../components/productCard";
+import Fab from "@mui/material/Fab";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import {
+  Card,
+  List,
+  ListItem,
+  Drawer,
+  Button,
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  Typography,
+  MenuItem,
+} from "@material-tailwind/react";
+
 import "./ProductsPage.css";
 const firebaseConfig = {
   // Your Firebase configuration
@@ -75,192 +88,183 @@ const ProductsPage = () => {
 
     fetchCategories();
   }, []);
-  console.log(window.location.href.split("#")[1]);
+  const SideBarContent = () => {
+    const navigate = useNavigate();
+    return (
+      <List className="flex flex-col  h-full overflow-y-auto">
+        <div className="mb-2 p-4">
+          <Typography variant="h5" color="blue-gray">
+            Categories
+          </Typography>
+        </div>
+        {categories.map((category, index) => (
+          <Link
+            style={{ textDecoration: "none" }}
+            to={"#" + index}
+            key={category.name}
+          >
+            <ListItem>
+              <Typography
+                sx={{
+                  my: 2,
+                  color: "#454545",
+                  textAlign: "left",
+                  fontWeight: "bold",
+                  textDecoration:
+                    window.location.href.split("#")[1] == index
+                      ? "underline"
+                      : "none",
+                }}
+              >
+                {category.name}
+              </Typography>
+            </ListItem>
+          </Link>
+        ))}
+      </List>
+    );
+  };
+
+  const [open, setOpen] = React.useState(false);
+
+  const openDrawer = () => setOpen(true);
+  const closeDrawer = () => setOpen(false);
+
+  const [openD, setOpenD] = React.useState(false);
+
+  const handleOpen = () => setOpen((cur) => !cur);
+  const cardRef = useRef(window);
+  useEffect(() => {
+    console.log("cardRef value:", cardRef.current);
+  }, [cardRef]);
   return (
     <Grid
       container
       flexDirection={{ xs: "column", sm: "column", md: "row" }}
       flexWrap="nowrap"
     >
-      <Grid item marginBottom={{ xs: "100px", sm: "100px", lg: "0px" }}>
-        <Grid item sx={{ display: { xs: "flex", sm: "flex", md: "none" } }}>
-          <IconButton
-            onClick={toggleAppBar}
-            sx={{
-              position: "fixed",
-              top: "140px",
-              right: 0,
-              zIndex: 9999,
-            }}
-          >
-            <FilterListIcon />
-          </IconButton>
-          <Modal
-            open={isAppBarVisible}
-            onClose={toggleAppBar}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "fixed",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            <AppBar
-              sx={{
-                width: "100%", // Adjust the width as needed
-
-                backgroundColor: "white",
-                color: "#202020",
-                boxShadow: "none",
-                borderRadius: "10px",
-                overflow: "hidden",
-              }}
-            >
-              <Toolbar sx={{ flexDirection: "column" }}>
-                <Typography
-                  sx={{
-                    my: 2,
-                    color: "#111111",
-                    display: "block",
-                    fontWeight: "bold",
-                    textAlign: "left",
-                    fontSize: "24px",
-                  }}
-                >
-                  Categories
-                </Typography>
-                <Grid
-                  container
-                  flexDirection="row"
-                  gap="15px"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  {categories.map((category, index) => (
-                    <Link
-                      style={{ textDecoration: "none" }}
-                      to={"#" + index}
-                      key={category.name}
-                    >
-                      <Typography
-                        sx={{
-                          my: 2,
-                          color: "#454545",
-                          textAlign: "left",
-                          fontWeight: "bold",
-                          padding: "5px 10px",
-                          border: "1px solid #D78C12",
-                          borderRadius: "10px",
-                          backgroundColor:
-                            window.location.href.split("#")[1] == index
-                              ? "#f1b34e"
-                              : "white",
-                        }}
-                      >
-                        {category.name}
-                      </Typography>
-                    </Link>
-                  ))}
-                </Grid>
-              </Toolbar>
-            </AppBar>
-          </Modal>
-        </Grid>
-        <AppBar
-          sx={{
-            height: "80vh",
-            maxWidth: "250px",
-            marginTop: { xs: "140px", sm: "140px", lg: "190px" },
-            paddingTop: "50px",
-            backgroundColor: "white",
-            color: "#202020",
-            marginLeft: { xs: "10px", sm: "10px", lg: "50px" },
-            boxShadow: "none",
-            position: "sticky",
-            display: { xs: "none", sm: "none", md: "flex" },
-          }}
+      <Drawer open={open} onClose={closeDrawer} className="p-4">
+        <SideBarContent />
+      </Drawer>
+      <div className="flex flex-row w-full gap-1 fixed m-2 h-screen">
+        <Card className="hidden lg:block h-[calc(100vh-5.5rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/3 rounded-md">
+          <SideBarContent />
+        </Card>
+        <Card
+          ref={cardRef}
+          className="flex-1 overflow-y-scroll p-4 rounded-md mr-2 h-full scroll-smooth"
+          style={{ maxHeight: "calc(100vh - 5.5rem)" }}
         >
-          <Toolbar>
-            <Grid
-              container
-              flexDirection="column"
-              alignItems="start"
-              justifyContent="center"
-            >
-              <Typography
-                sx={{
-                  my: 2,
-                  color: "#111111",
-                  display: "block",
-                  fontWeight: "bold",
-                  textAlign: "left",
-                  fontSize: "24px",
-                }}
-              >
-                Categories
-              </Typography>
-              {categories.map((category, index) => (
-                <Link
-                  style={{ textDecoration: "none" }}
-                  to={"#" + index}
-                  key={category.name}
-                >
-                  <Typography
-                    sx={{
-                      my: 2,
-                      color: "#454545",
-                      textAlign: "left",
-                      fontWeight: "bold",
-                      textDecoration:
-                        window.location.href.split("#")[1] == index
-                          ? "underline"
-                          : "none",
-                    }}
-                  >
-                    {category.name}
-                  </Typography>
-                </Link>
-              ))}
-            </Grid>
-          </Toolbar>
-        </AppBar>
-      </Grid>
-      <Grid
-        item
-        display="flex"
-        flexDirection="column"
-        gap="50px"
-        justifyContent="center"
-        alignItems="center"
-        padding={{ xs: "25px", sm: "25px", lg: "75px" }}
-        sx={{ width: "100%" }}
-      >
-        {categories.map((category, index) => (
           <Grid
-            key={category.name}
-            id={index}
-            container
+            item
             display="flex"
             flexDirection="column"
-            gap="25px"
+            gap="50px"
             justifyContent="center"
             alignItems="center"
+            padding={{ xs: "25px", sm: "25px", lg: "75px" }}
             sx={{ width: "100%" }}
           >
-            <h1 className=" text-3xl font-bold">{category.name}</h1>
-            <div className="products-grid">
-              {category.products.map((product) => (
-                <ProductCard key={product.name} product={product} />
-              ))}
-            </div>
+            {categories.map((category, index) => (
+              <Grid
+                key={category.name}
+                id={index}
+                container
+                display="flex"
+                flexDirection="column"
+                gap="25px"
+                justifyContent="center"
+                alignItems="center"
+                sx={{ width: "100%" }}
+              >
+                <h1 className=" text-3xl font-bold">{category.name}</h1>
+                <div className="products-grid">
+                  {category.products.map((product) => (
+                    <ProductCard key={product.name} product={product} />
+                  ))}
+                </div>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
-      <ScrollToTop />
+
+          <ScrollToTop cardRef={cardRef} />
+        </Card>
+      </div>
+      <div
+        style={{
+          position: "fixed",
+          bottom: "2rem",
+          left: "2rem",
+          zIndex: 9999,
+        }}
+        className="block lg:hidden "
+      >
+        <Fab onClick={handleOpen}>
+          <FilterListIcon />
+        </Fab>
+      </div>
+
+      <Dialog size="xs" open={openD} handler={handleOpen}>
+        <DialogHeader className="justify-between">
+          <Typography variant="h5" color="blue-gray">
+            Connect a Wallet
+          </Typography>
+          <IconButton
+            color="blue-gray"
+            size="sm"
+            variant="text"
+            onClick={handleOpen}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+              className="h-5 w-5"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </IconButton>
+        </DialogHeader>
+        <DialogBody className="overflow-y-scroll pr-2">
+          <div className="mb-6">
+            <Typography
+              variant="small"
+              color="gray"
+              className="font-semibold opacity-70"
+            >
+              Popular
+            </Typography>
+            <ul className="mt-1 -ml-2 flex flex-col gap-1">
+              <MenuItem className="flex items-center gap-3">
+                <img
+                  src="/icons/metamask.svg"
+                  alt="metamast"
+                  className="h-6 w-6"
+                />
+                <Typography color="blue-gray" variant="h6">
+                  MetaMask
+                </Typography>
+              </MenuItem>
+              <MenuItem className="flex items-center gap-3">
+                <img
+                  src="/icons/coinbase.svg"
+                  alt="metamast"
+                  className="h-6 w-6 rounded-md"
+                />
+                <Typography color="blue-gray" variant="h6">
+                  Coinbase Wallet
+                </Typography>
+              </MenuItem>
+            </ul>
+          </div>
+        </DialogBody>
+      </Dialog>
     </Grid>
   );
 };

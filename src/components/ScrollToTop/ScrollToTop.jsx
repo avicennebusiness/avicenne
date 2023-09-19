@@ -1,24 +1,22 @@
 import Fab from "@mui/material/Fab";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import { useScrollTrigger, Zoom } from "@mui/material";
+import React from "react";
 
-const ScrollToTop = () => {
-  const handleClick = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+const ScrollToTop = ({ cardRef }) => {
   const trigger = useScrollTrigger({
     disableHysteresis: true,
     threshold: 100,
+    target: cardRef?.current, // Use optional chaining here
   });
 
   const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (cardRef?.current) {
+      cardRef.current.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
   };
 
   return (
