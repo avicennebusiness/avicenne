@@ -7,10 +7,8 @@ import {
   CardFooter,
   Typography,
   Button,
-  Tooltip,
-  IconButton,
 } from "@material-tailwind/react";
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, handleOpenDialog }) => {
   return (
     <Card className="h-full w-full max-w-[26rem] shadow-lg justify-between">
       <CardHeader floated={false} color="blue-gray">
@@ -29,59 +27,10 @@ const ProductCard = ({ product }) => {
         <Typography color="gray">{product.description}</Typography>
       </CardBody>
       <CardFooter className="pt-0 self-end ">
-        <Button>Read More</Button>
+        <Button onClick={() => handleOpenDialog(product)}>Read More</Button>
       </CardFooter>
     </Card>
   );
 };
 
 export default ProductCard;
-
-/*<Card
-      sx={{
-        width: { xs: "250px", sm: "250px", lg: "300px" },
-        height: "500px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-      }}
-    >
-      <CardActionArea>
-        <CardMedia component="img" height="250px" image={Honey} alt="Honey" />
-        <CardContent
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            flexWrap: "nowrap",
-            alignItems: "center",
-            marginTop: "25px",
-            paddingX: "10px",
-            gap: "10px",
-          }}
-        >
-          <Typography gutterBottom variant="h5" component="div">
-            {product.name}
-          </Typography>
-          <Typography variant="h5" color="text.secondary">
-            {product.price + " TND"}
-          </Typography>
-        </CardContent>
-      </CardActionArea>
-      <CardActions sx={{ justifyContent: "end" }}>
-        <Button
-          size="small"
-          sx={{
-            backgroundColor: "#fff",
-            color: "#D78C12",
-            "&:hover": {
-              backgroundColor: "#f5cd8c88",
-              color: "#D78C12",
-            },
-            my: 2,
-            borderRadius: "3px",
-          }}
-        >
-          View More
-        </Button>
-      </CardActions>
-        </Card>*/

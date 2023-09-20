@@ -1,73 +1,24 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect } from "react";
 import { Grid } from "@mui/material";
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, DataSnapshot } from "firebase/database";
-import { Button } from "@material-tailwind/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ProductCard from "../../components/productCard";
 import "./ProductsSection.css";
 
 import { motion, AnimatePresence } from "framer-motion";
-const firebaseConfig = {
-  // Your Firebase configuration
-  apiKey: "AIzaSyDz8ImWVqIxTrw8SMQmPDEzvix6O5pfmEs",
-  authDomain: "avicenne-2f52b.firebaseapp.com",
-  databaseURL: "https://avicenne-2f52b-default-rtdb.firebaseio.com",
-  projectId: "avicenne-2f52b",
-  storageBucket: "avicenne-2f52b.appspot.com",
-  messagingSenderId: "928490117933",
-  appId: "1:928490117933:web:32c1eb4a46332bcb86d1a4",
-  measurementId: "G-25CRWWZQF1",
-};
-
-// Initialize Firebase
-const firebaseApp = initializeApp(firebaseConfig);
-const database = getDatabase(firebaseApp);
+import { fetchData } from "../../firebase/firebase-functions";
 
 const ProductsSection = () => {
   const [categories, setCategories] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [activeCat, setActiveCat] = useState(0);
-  const navigate = useNavigate();
 
   useEffect(() => {
-    const categoriesRef = ref(database, "Categories");
-
-    const fetchCategories = () => {
-      onValue(
-        categoriesRef,
-        (snapshot) => {
-          const data = snapshot.val();
-          if (data) {
-            const categoriesArray = Object.entries(data).map(
-              ([categoryName, products]) => ({
-                name: categoryName,
-                products: Object.entries(products).map(
-                  ([productName, product]) => ({
-                    name: productName,
-                    ...product,
-                  })
-                ),
-              })
-            );
-            console.log(categoriesArray);
-            setCategories(categoriesArray);
-
-            const allProducts = categoriesArray.flatMap(
-              (category) => category.products
-            );
-            const sortedBestSellers = [...allProducts].sort(
-              (a, b) => b.price - a.price
-            );
-            setBestSellers(sortedBestSellers);
-            setFiltered(sortedBestSellers.slice(0, 6));
-          }
-        },
-        (error) => {
-          console.error("Error fetching categories:", error);
-        }
-      );
+    const fetchCategories = async () => {
+      const response = await fetchData();
+      setCategories(response.categoriesArray);
+      setBestSellers(response.sortedBestSellers);
+      setFiltered(response.sortedBestSellers.slice(0, 6));
     };
 
     fetchCategories();
@@ -92,7 +43,7 @@ const ProductsSection = () => {
         alignItems="center"
         padding={{ xs: "25px", sm: "25px", lg: "75px" }}
       >
-        <div className="filter-container flex flex-wrap gap-2">
+        <div className="filter-container flex flex-col justify-start items-start sm:flex-row flex-wrap gap-2 px-12 sm:justify-center sm:items-center">
           <button
             className={activeCat == 0 ? "active" : ""}
             onClick={() => {
@@ -102,84 +53,24 @@ const ProductsSection = () => {
           >
             Best Sellers
           </button>
-          <button
-            className={activeCat == 1 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Miels")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(1);
-            }}
-          >
-            Honey
-          </button>
-          <button
-            className={activeCat == 2 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Crèmes")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(2);
-            }}
-          >
-            Crèmes
-          </button>
-          <button
-            className={activeCat == 3 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Huiles essentielles")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(3);
-            }}
-          >
-            Huiles essentielles
-          </button>
-          <button
-            className={activeCat == 4 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Huiles végétales")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(4);
-            }}
-          >
-            Huiles végétales
-          </button>
-          <button
-            className={activeCat == 5 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Hydrolats")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(5);
-            }}
-          >
-            Hydrolats
-          </button>
-          <button
-            className={activeCat == 6 ? "active" : ""}
-            onClick={() => {
-              setFiltered(
-                categories
-                  .filter((cat) => cat.name === "Produits de la suche")[0]
-                  .products.slice(0, 6)
-              );
-              setActiveCat(6);
-            }}
-          >
-            Produits de la suche
-          </button>
+          {categories.map((categorie, index) => {
+            return (
+              <button
+                key={categorie.name}
+                className={activeCat == index + 1 ? "active" : ""}
+                onClick={() => {
+                  setFiltered(
+                    categories
+                      .filter((cat) => cat.name === categorie.name)[0]
+                      .products.slice(0, 6)
+                  );
+                  setActiveCat(index + 1);
+                }}
+              >
+                {categorie.name}
+              </button>
+            );
+          })}
         </div>
         <AnimatePresence>
           <Grid
