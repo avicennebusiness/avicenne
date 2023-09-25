@@ -8,9 +8,15 @@ import {
   Typography,
   Button,
 } from "@material-tailwind/react";
+import { useNavigate } from "react-router-dom";
 const ProductCard = ({ product, handleOpenDialog }) => {
+  console.log(product);
+  const navigate = useNavigate();
   return (
-    <Card className="h-full w-full max-w-[26rem] shadow-lg justify-between">
+    <Card
+      className="h-full w-full max-w-[26rem] shadow-lg justify-between cursor-pointer"
+      onClick={() => handleOpenDialog(product)}
+    >
       <CardHeader floated={false} color="blue-gray">
         <img src={Honey} alt="product-img" />
         <div className="to-bg-black-10 absolute inset-0 h-full w-full bg-gradient-to-tr from-transparent via-transparent to-blue-gray-300/60 " />
@@ -27,7 +33,14 @@ const ProductCard = ({ product, handleOpenDialog }) => {
         <Typography color="gray">{product.description}</Typography>
       </CardBody>
       <CardFooter className="pt-0 self-end ">
-        <Button onClick={() => handleOpenDialog(product)}>Read More</Button>
+        <Button
+          onClick={(evt) => {
+            evt.stopPropagation();
+            navigate(`/avicenne/${product.name}`);
+          }}
+        >
+          Read More
+        </Button>
       </CardFooter>
     </Card>
   );

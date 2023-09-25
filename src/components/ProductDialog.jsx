@@ -29,37 +29,30 @@ const ProductDialog = ({ selectedProduct, openDialog, handleOpenDialog }) => {
           <div className="flex flex-col md:flex-row">
             <img
               alt={selectedProduct?.name}
-              className="max-w-[400px] max-h-[300px] flex-1"
+              className="w-full md:max-w-[400px] max-h-[300px] flex-1"
               src={Honey}
             />
             <Typography
               variant="h6"
               color="blue-gray"
-              className="font-medium flex-2"
+              className="font-medium mt-4 md:mt-0 md:ml-4 md:flex-2"
             >
               {selectedProduct?.description}
             </Typography>
           </div>
         </DialogBody>
         <DialogFooter className="justify-between">
-          <div className="flex items-center gap-16 px-4">
+          <div className="flex items-center gap-8 md:gap-16 px-4">
             <div>
               <Typography variant="small" color="gray" className="font-normal">
                 Price
               </Typography>
-              <Typography color="blue-gray" className="font-medium">
+              <Typography className="font-medium text-xl md:text-2xl text-[#D58B15]">
                 {selectedProduct?.price + " TND"}
               </Typography>
             </div>
           </div>
-          <Button
-            size="sm"
-            variant="outlined"
-            color="blue-gray"
-            className="flex items-center gap-3"
-          >
-            Order One Now
-          </Button>
+          <Button>Order One Now</Button>
         </DialogFooter>
       </Dialog>
     )

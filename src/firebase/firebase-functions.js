@@ -44,5 +44,30 @@ const fetchData = () => {
     );
   });
 };
+const getProductByName = (productName) => {
+  return new Promise((resolve, reject) => {
+    onValue(
+      ref(database, "Categories"), // Assuming you have a "Categories" node in your Firebase database
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const foundProduct = Object.values(data)
+            .flatMap((category) => Object.values(category))
+            .find((product) => product.name === productName);
 
-export { fetchData };
+          if (foundProduct) {
+            resolve(foundProduct);
+          } else {
+            reject(`Product with name '${productName}' not found.`);
+          }
+        }
+      },
+      (error) => {
+        console.error("Error fetching product:", error);
+        reject(error);
+      }
+    );
+  });
+};
+
+export { fetchData, getProductByName };

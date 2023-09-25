@@ -3,7 +3,7 @@ import { Grid } from "@mui/material";
 import { Link } from "react-router-dom";
 import ProductCard from "../../components/productCard";
 import "./ProductsSection.css";
-
+import ProductDialog from "../../components/ProductDialog";
 import { motion, AnimatePresence } from "framer-motion";
 import { fetchData } from "../../firebase/firebase-functions";
 
@@ -27,6 +27,14 @@ const ProductsSection = () => {
     hidden: { opacity: 0, scale: 0.8, y: 20 },
     visible: { opacity: 1, scale: 1, y: 0 },
   };
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const handleOpenDialog = (product) => {
+    setOpenDialog((cur) => !cur);
+    setSelectedProduct(product);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -91,7 +99,11 @@ const ProductsSection = () => {
                   exit="hidden"
                   className="h-full w-full max-w-[26rem]"
                 >
-                  <ProductCard key={product.name} product={product} />
+                  <ProductCard
+                    key={product.name}
+                    product={product}
+                    handleOpenDialog={handleOpenDialog}
+                  />
                 </motion.div>
               ))}
             </div>
@@ -108,6 +120,12 @@ const ProductsSection = () => {
           </Grid>
         </AnimatePresence>
       </Grid>
+
+      <ProductDialog
+        selectedProduct={selectedProduct}
+        openDialog={openDialog}
+        handleOpenDialog={handleOpenDialog}
+      />
     </motion.div>
   );
 };

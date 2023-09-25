@@ -35,7 +35,12 @@ const ProductsPage = () => {
 
     fetchCategories();
   }, []);
+
   const SideBarContent = ({ Drawer }) => {
+    const [activeCategory, setActiveCategory] = useState(null);
+    const handleClick = (ind) => {
+      setActiveCategory(ind);
+    };
     return (
       <List className="flex flex-col  h-full overflow-y-auto">
         <div className="mb-2 p-4">
@@ -48,7 +53,18 @@ const ProductsPage = () => {
             style={{ textDecoration: "none" }}
             to={"#" + index}
             key={category.name}
-            onClick={Drawer && closeDrawer}
+            onClick={
+              Drawer
+                ? closeDrawer
+                : () => {
+                    handleClick(index);
+                  }
+            }
+            className={`transition-colors duration-300  rounded-md ${
+              activeCategory === index
+                ? "bg-[#212121] text-white rounded-md"
+                : ""
+            }`}
           >
             <ListItem>
               <Typography
@@ -57,9 +73,9 @@ const ProductsPage = () => {
                   color: "#454545",
                   textAlign: "left",
                   fontWeight: "bold",
-                  textDecoration:
+                  backgroundColor:
                     window.location.href.split("#")[1] == index
-                      ? "underline"
+                      ? "red"
                       : "none",
                 }}
               >
